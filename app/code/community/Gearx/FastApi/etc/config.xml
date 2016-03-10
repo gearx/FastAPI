@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Gearx_FastApi>
+            <version>1.0.0</version>
+        </Gearx_FastApi>
+    </modules>
+    <global>
+        <models>
+            <gxapi>
+                <class>Gearx_FastApi_Model</class>
+            </gxapi>
+        </models>
+    </global>
+</config>
