@@ -113,7 +113,7 @@ class Gearx_FastApi_Model_Attribute
     }
 
     /**
-     * Assign appropriate backend value, the write it to the database for the given product_id
+     * Assign appropriate backend value, then write it to the database for the given product_id
      * catalog_product_entity_datatype tables have the same field names
      * @param $product_id
      * @param $value
@@ -145,7 +145,7 @@ class Gearx_FastApi_Model_Attribute
     }
 
     /**
-     * Ensure numeric value
+     * Ensure positive numeric value
      * @param $value
      * @return number      set to 0 if value is negative
      * @throws Exception   if value is non-numeric

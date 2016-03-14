@@ -63,6 +63,7 @@ class Gearx_FastApi_Model_Product
 
     /**
      * Update qty and stock status
+     * @param $qty  number
      */
     public function updateStock($qty) 
     {
