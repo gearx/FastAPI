@@ -14,21 +14,19 @@ class Gearx_FastApi_Model_Request
     protected $products = array();
     protected $field_maps = array(
         'test' => array(
-            'line'  => false,
-            'style' => false,
-            'dept'  => 'posim_misc1',
-            'collections' => false,
-            'mfg'   => false,
-            'website_ids' => false,
-            'row'   => false,
-            'misc4' => false,
-            'misc5' => false,
-            'column' => false,
-            'notes_warranty' => false,
-            'mfg_sku' => false,
+            'qty'  => 'qty',
+            'dept' => 'posim_misc1',
+            'upc'  => 'upc',
+            'weight' => 'weight',
+            'special_price' => 'special_price',
+            'price' => 'price',
             'brand' => 'manufacturer',
             'misc1' => 'posim_misc2',
             'misc3' => 'discount_type_posim',
+            
+            'location' => 'warehouse_location',
+            'color'    => 'manufacturer_color',
+            'simple_color' => 'simple_color',
         ),
     );
 
@@ -40,14 +38,18 @@ class Gearx_FastApi_Model_Request
             $this->field_map_code = false;
         }
     }
-    
-    public function getFieldMap()
+
+    public function getMappedField($code)
     {
-        $code = $this->field_map_code;
-        if (array_key_exists($code, $this->field_maps)) {
-            return $this->field_maps[$code];
+        if ($this->field_map_code) {
+            $field_map = $this->field_maps[$this->field_map_code];
+            if (array_key_exists($code, $field_map)) {
+                return $field_map[$code];
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            return $code;
         }
     }
     

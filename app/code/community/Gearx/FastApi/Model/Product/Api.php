@@ -26,7 +26,7 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
 //        ),
 //        //etc
 //    );
-    protected function update($products, $field_map_code = false)
+    public function update($products, $field_map_code = false)
     {
         $request = Mage::getSingleton('gxapi/request');
         $request->setFieldMap($field_map_code);
@@ -35,11 +35,14 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
             try {
                 $product = new Gearx_FastApi_Model_Product($sku);
                 foreach ($fields as $code => $value) {
-                    $product->updateField($code, $value);
+                    $mapped_code = $request->getMappedField($code);
+                    if ($mapped_code) {
+                        $product->updateField($mapped_code, $value);
+                    }
                 }
             } catch (Exception $e) {
-                //return 'Skipping Product: ' . $e->getMessage() . PHP_EOL;
-                $this->_fault($e->getCode(), $e->getMessage());
+                echo 'Skipping Product: ' . $e->getMessage() . PHP_EOL;
+                //$this->_fault($e->getCode(), $e->getMessage());
             }
         }
         //Mage::getSingleton('gxapi/request')->reindexUpdatedProducts();
