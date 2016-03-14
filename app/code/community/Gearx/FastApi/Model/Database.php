@@ -35,8 +35,8 @@ class Gearx_FastApi_Model_Database
      */
     public function fetchValue($query, $binds)
     {
-        $value = $this->read->query($query, $binds)->fetch();
-        return $value[0];
+        $result = $this->read->query($query, $binds)->fetch();
+        return current($result);
     }
 
     /**
