@@ -13,34 +13,14 @@ This module simply adds new methods to the existing API.
 ### Added Methods
 
 
-| Method               | Arguments        | 
-|----------------------|------------------|
-| gxproduct.update     | SKU, ProductData | 
-| gxproduct.bulkUpdate | ProductData      | 
+| Method               | Arguments                                         | 
+|----------------------|---------------------------------------------------|
+| gxproduct.update     | array ProductData, string FieldMapping (optional) | 
 
 
-#### Argument Examples
-Intentionally in pseudo code.  See above for detailed Magento API documentation.
 
-##### gxproduct.update
-
-	SKU = 'sku value'
-	ProductData = [
-		'attribute_code_1': 'Attribute Value 1'
-		'attribute_code_2': 'Attribute Value 2'
-		// etc ...
-	]
-	
-	SKU = '55A47-001'
-	ProductData = [
-		'name':  'Marmot Precip Jacket - Large - Blue'
-		'price': 99.95
-		'special_price': 79.95
-		'qty': 14
-	]
-	
-
-##### gxproduct.bulkUpdate
+#### Argument: ProductData Array
+Associative array with skus as keys and arrays of fields to update as values.  Intentionally in pseudo code.  See above for detailed Magento API documentation.
 
 	ProductData = [
 		'sku1': [
@@ -64,3 +44,6 @@ Intentionally in pseudo code.  See above for detailed Magento API documentation.
 		]
 	]
 
+
+#### FieldMapping
+This argument may be optionally included to specify a field mapping
