@@ -29,7 +29,12 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
     public function update($products, $field_map_code = false)
     {
         $request = Mage::getSingleton('gxapi/request');
-        $request->setFieldMap($field_map_code);
+        try {
+            $request->setFieldMap($field_map_code);
+        } catch (Exception $e) {
+            echo "Update Cancelled:  Field map \"$field_map_code\" not defined" . PHP_EOL;
+            return;
+        }
 
         foreach ($products as $sku => $fields) {
             try {

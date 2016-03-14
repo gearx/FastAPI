@@ -12,44 +12,50 @@ class Gearx_FastApi_Model_Request
     
     protected $attributes = array();
     protected $products = array();
-    protected $field_maps = array(
-        'test' => array(
-            'qty'  => 'qty',
-            'dept' => 'posim_misc1',
-            'upc'  => 'upc',
-            'weight' => 'weight',
-            'special_price' => 'special_price',
-            'price' => 'price',
-            'brand' => 'manufacturer',
-            'misc1' => 'posim_misc2',
-            'misc3' => 'discount_type_posim',
-            
-            'location' => 'warehouse_location',
-            'color'    => 'manufacturer_color',
-            'simple_color' => 'simple_color',
-        ),
-    );
+    protected $fieldmap;
 
-    public function setFieldMap($code)
+
+    /**
+     * If passed a param other than false, attempt to load the specified
+     * field mapping from etc/fieldmap.xml
+     * @param $fieldmap_code
+     * @throws Exception
+     */
+    public function setFieldMap($fieldmap_code)
     {
-        if (array_key_exists($code, $this->field_maps)) {
-            $this->field_map_code = $code;
+        if ($fieldmap_code === false) {
+            $this->fieldmap = false;
         } else {
-            $this->field_map_code = false;
+            $fieldmaps = '';
+            $filepath = Mage::getBaseDir('app') . '/code/community/Gearx/FastApi/etc/fieldmap.xml';
+            if (file_exists($filepath)) {
+                $xmlfile = file_get_contents($filepath);
+                $fieldmaps = simplexml_load_string($xmlfile);
+            }
+            if (property_exists($fieldmaps, $fieldmap_code)) {
+                $this->fieldmap = (array) $fieldmaps->{$fieldmap_code};
+            } else {
+                throw new Exception("Fieldmap $fieldmap_code not defined");
+            }
         }
     }
 
-    public function getMappedField($code)
+    /**
+     * Get mapped field name if a fieldmap is defined
+     * otherwise pass fieldname through unchanged
+     * @param $fieldname
+     * @return string|false
+     */
+    public function getMappedField($fieldname)
     {
-        if ($this->field_map_code) {
-            $field_map = $this->field_maps[$this->field_map_code];
-            if (array_key_exists($code, $field_map)) {
-                return $field_map[$code];
+        if ($this->fieldmap == false) {
+            return $fieldname;
+        } else {
+            if (array_key_exists($fieldname, $this->fieldmap)) {
+                return $this->fieldmap[$fieldname];
             } else {
                 return false;
             }
-        } else {
-            return $code;
         }
     }
     

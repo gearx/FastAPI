@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<!-- Copy this file and rename to fieldmap.xml to define field mapping -->
+
+<fieldmap>
+
+    <!-- DEFINITIONS -->
+    <fieldmap_code>
+        <external_field_1> magento_field_1 </external_field_1>
+        <external_field_2> magento_field_2 </external_field_2>
+    </fieldmap_code>
+
+    <!-- EXAMPLE -->
+    <example>
+        <suggested_retail>msrp</suggested_retail>
+        <our_retail>price</our_retail>
+        <sale_price>current_price</sale_price>
+        <quantity>qty</quantity>
+        <upc>upc</upc>
+        <brand>manufacturer</brand>
+    </example>
+
+</fieldmap>
