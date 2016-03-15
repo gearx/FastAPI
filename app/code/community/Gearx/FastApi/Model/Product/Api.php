@@ -52,5 +52,29 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
         }
         //Mage::getSingleton('gxapi/request')->reindexUpdatedProducts();
     }
+    
+    public function checkSkus($skus)
+    {
+        if (is_array($skus) && count($skus) > 0 ) {
+            $database = Mage::getSingleton('gxapi/database');
+            $bind_set = str_repeat('?,', count($skus) - 1) . '?';
+            $cpe = $database->table('catalog_product_entity');
+            $query = "SELECT sku, type_id FROM $cpe WHERE sku IN ($bind_set) ;";
+            $results = $database->fetchAll($query, $skus);
+            
+            $new_array = array_fill_keys($skus, false);
+            foreach ($results as $result) {
+                $sku = $result['sku'];
+                if (array_key_exists($sku, $new_array)) {
+                    $new_array[$sku] = $result['type_id'];
+                }
+            }
+            return $new_array;
+        } else {
+            $this->_fault(101, "Skus not specified properly");
+            return "No skus specified";
+        }
+
+    }
 
 }

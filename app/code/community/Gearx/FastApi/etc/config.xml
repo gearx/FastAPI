@@ -11,5 +11,10 @@
                 <class>Gearx_FastApi_Model</class>
             </gxapi>
         </models>
+        <helpers>
+            <gxapi>
+                <class>Gearx_FastApi_Helper</class>
+            </gxapi>
+        </helpers>
     </global>
 </config>

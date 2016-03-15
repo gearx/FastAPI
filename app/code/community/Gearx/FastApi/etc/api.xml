@@ -2,15 +2,18 @@
 <config>
     <api>
         <resources>
-            <gxproduct translate="title" module="gearx_fastapi">
+            <gxproduct translate="title" module="gxapi">
                 <title>Gearx Fast API Product</title>
                 <model>gxapi/product_api</model>
                 <methods>
-                    <update translate="title" module="gearx_fastapi">
+                    <update translate="title" module="gxapi">
                         <title>Update Products</title>
                     </update>
+                    <checkSkus translate="title" module="gxapi">
+                        <title>Check If Skus Exist</title>
+                    </checkSkus>
                 </methods>
-                <faults module="gearx_fastapi">
+                <faults module="gxapi">
                     <store_not_exists>
                         <code>100</code>
                         <message>Requested store view not found.</message>
