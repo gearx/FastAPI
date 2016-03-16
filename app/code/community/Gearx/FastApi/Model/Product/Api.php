@@ -28,14 +28,15 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
 //    );
     public function update($products, $field_map_code = false)
     {
+        if (!is_array($products) || count($products) == 0 ) {
+            $this->_fault('bad_param');
+        }
         $request = Mage::getSingleton('gxapi/request');
         try {
             $request->setFieldMap($field_map_code);
         } catch (Exception $e) {
-            echo "Update Cancelled:  Field map \"$field_map_code\" not defined" . PHP_EOL;
-            return;
+            $this->_fault('bad_param', $e->getMessage());
         }
-
         foreach ($products as $sku => $fields) {
             try {
                 $product = new Gearx_FastApi_Model_Product($sku);
@@ -46,11 +47,11 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
                     }
                 }
             } catch (Exception $e) {
-                echo 'Skipping Product: ' . $e->getMessage() . PHP_EOL;
-                //$this->_fault($e->getCode(), $e->getMessage());
+                $request->addError($e->getMessage());
             }
         }
         //Mage::getSingleton('gxapi/request')->reindexUpdatedProducts();
+        return $request->getResponse();
     }
     
     public function checkSkus($skus)
@@ -62,17 +63,16 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
             $query = "SELECT sku, type_id FROM $cpe WHERE sku IN ($bind_set) ;";
             $results = $database->fetchAll($query, $skus);
             
-            $new_array = array_fill_keys($skus, false);
+            $response = array_fill_keys($skus, false);
             foreach ($results as $result) {
                 $sku = $result['sku'];
-                if (array_key_exists($sku, $new_array)) {
-                    $new_array[$sku] = $result['type_id'];
+                if (array_key_exists($sku, $response)) {
+                    $response[$sku] = $result['type_id'];
                 }
             }
-            return $new_array;
+            return $response;
         } else {
-            $this->_fault(101, "Skus not specified properly");
-            return "No skus specified";
+            $this->_fault('bad_param');
         }
 
     }

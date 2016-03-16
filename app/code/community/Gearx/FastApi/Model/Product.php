@@ -33,7 +33,7 @@ class Gearx_FastApi_Model_Product
         $entity_id = $this->database->fetchValue($query, $binds);
         
         if (is_null($entity_id)) {
-            throw new Exception("SKU $sku not found", 101);
+            throw new Exception("SKU $sku skipped: Product not found", 101);
         } else {
             $this->sku = $sku;
             $this->entity_id = $entity_id;
@@ -45,6 +45,7 @@ class Gearx_FastApi_Model_Product
      * Choose appropriate update action based on field type
      * @param $code   string   field code
      * @param $value  mixed    field value
+     * @throws Exception
      */
     public function updateField($code, $value)
     {
@@ -56,7 +57,7 @@ class Gearx_FastApi_Model_Product
                 $attribute->updateValue($this->entity_id, $value);
             }
         } catch (Exception $e) {
-            echo "SKU $this->sku - skipping field $code:  " . $e->getMessage() . PHP_EOL;
+            $this->request->addError("SKU $this->sku:  field \"$code\" skipped:  " . $e->getMessage());
         }
 
     }
@@ -64,9 +65,16 @@ class Gearx_FastApi_Model_Product
     /**
      * Update qty and stock status
      * @param $qty  number
+     * @throws Exception
      */
     public function updateStock($qty) 
     {
+        if (is_numeric($qty)) {
+            $qty = ($qty > 0) ? $qty : 0;
+        } else {
+            throw new Exception("Stock quantity cannot be be set to non-numeric value \"$qty\"");
+        }
+        
         $csi  = $this->database->table('cataloginventory_stock_item');
         $binds = array(
             'id' => $this->entity_id,

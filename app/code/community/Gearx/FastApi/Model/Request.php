@@ -8,11 +8,11 @@
 
 class Gearx_FastApi_Model_Request 
 {
-    protected $field_map_code;
-    
     protected $attributes = array();
     protected $products = array();
-    protected $fieldmap;
+    protected $fieldmap_code;
+    protected $fieldmap = array();
+    protected $errors = array();
 
 
     /**
@@ -34,8 +34,9 @@ class Gearx_FastApi_Model_Request
             }
             if (property_exists($fieldmaps, $fieldmap_code)) {
                 $this->fieldmap = (array) $fieldmaps->{$fieldmap_code};
+                $this->fieldmap_code = $fieldmap_code;
             } else {
-                throw new Exception("Fieldmap $fieldmap_code not defined");
+                throw new Exception("Fieldmap \"$fieldmap_code\" not defined");
             }
         }
     }
@@ -90,6 +91,33 @@ class Gearx_FastApi_Model_Request
         $unique_ids = array_unique($this->products);
         $this->products = $unique_ids;
         return $this->products;
+    }
+    
+    public function addError($error_message)
+    {
+        $this->errors[] = $error_message;
+    }
+
+    public function getResponse()
+    {
+        if ($this->fieldmap == false) {
+            $fieldmap = false;
+        } else {
+            $header = array('REQUEST CODE' => 'MAGENTO CODE');
+            $fieldmap = array_merge($header, $this->fieldmap);
+        }
+        
+        $errors = (count($this->errors) > 0) ? $this->errors : false;
+        
+        $status = 'Request complete';
+        if ($errors) $status .= ' with errors';
+        if ($fieldmap) $status .= ".  Fieldmap $this->fieldmap_code used";
+
+        return array(
+            'status' => $status,
+            'fieldmap' => $fieldmap,
+            'errors' => $errors,
+        );
     }
     
     public function reindexUpdatedProducts()

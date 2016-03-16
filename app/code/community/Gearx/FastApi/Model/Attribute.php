@@ -36,14 +36,13 @@ class Gearx_FastApi_Model_Attribute
         $query = "SELECT attribute_id, frontend_input, backend_type FROM $table WHERE attribute_code = :attribute_code";
         $result = $this->database->fetchRecord($query, $binds);
 
-        if (is_array($result)) {
+        if (is_null($result['attribute_id'])) {
+            $this->supported = false;
+            $this->error_message = "Attribute code does not exist";
+        } else {
             $this->id    = $result['attribute_id'];
             $this->type  = $result['frontend_input'];
             $this->backend_type  = $result['backend_type'];
-            
-        } else {
-            $this->supported = false;
-            $this->error_message = "Attribute code $code does not exist";
         }
     }
     
@@ -155,7 +154,7 @@ class Gearx_FastApi_Model_Attribute
         if (is_numeric($value)) {
             return ($value > 0) ? $value : 0;
         } else {
-            throw new Exception("Attribute $this->code cannot be be set to non-numeric value \"$value\"");
+            throw new Exception("Numeric attribute cannot be be set to non-numeric value \"$value\"");
         }
     }
 
@@ -168,14 +167,14 @@ class Gearx_FastApi_Model_Attribute
     protected function getOptionId($value)
     {
         if ($this->getType() != 'select') {
-            throw new Exception("Can't get option_id for non-select attribute " . $this->code, 102);
+            throw new Exception("Can't get option_id for non-select attribute " . $this->code);
         }
         if (!array_key_exists($value, $this->options)) {
             $this->loadOptionId($value);
         }
         $option_id = $this->options[$value];
         if ($option_id === false) {
-            throw new Exception("option_id not found for \"$value\"", 102);
+            throw new Exception("option_id not found for \"$value\"");
         }
         return $option_id;
     }
