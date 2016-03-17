@@ -33,7 +33,7 @@ class Gearx_FastApi_Model_Database
      * @param $binds
      * @return string
      */
-    public function fetchValue($query, $binds)
+    public function fetchValue($query, $binds = array())
     {
         $result = $this->read->query($query, $binds)->fetch();
         return current($result);
@@ -45,7 +45,7 @@ class Gearx_FastApi_Model_Database
      * @param $binds
      * @return array
      */
-    public function fetchRecord($query, $binds)
+    public function fetchRecord($query, $binds = array())
     {
         $record = $this->read->query($query, $binds)->fetch();
         return $record;
@@ -57,7 +57,7 @@ class Gearx_FastApi_Model_Database
      * @param $binds
      * @return array
      */
-    public function fetchAll($query, $binds)
+    public function fetchAll($query, $binds = array())
     {
         $records = $this->read->query($query, $binds)->fetchAll();
         return $records;
@@ -68,7 +68,7 @@ class Gearx_FastApi_Model_Database
      * @param $query
      * @param $binds
      */
-    public function write($query, $binds)
+    public function write($query, $binds = array())
     {
         $this->write->query($query, $binds);
     }

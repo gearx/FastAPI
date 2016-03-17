@@ -126,7 +126,11 @@ class Gearx_FastApi_Model_Attribute
                 $backend_value = $this->validateNumber($value);
                 break;
             case 'select':
-                $backend_value = $this->getOptionId($value);
+                if ($this->code == 'tax_class_id') {
+                    $backend_value = $this->getTaxClassId($value);
+                } else {
+                    $backend_value = $this->getOptionId($value);
+                }
                 break;
             default:
                 $backend_value = $value;
@@ -155,6 +159,43 @@ class Gearx_FastApi_Model_Attribute
             return ($value > 0) ? $value : 0;
         } else {
             throw new Exception("Numeric attribute cannot be be set to non-numeric value \"$value\"");
+        }
+    }
+
+    /**
+     * Validates tax class name or tax class id, and then returns tax class id
+     * @param $value  string|int
+     * @return int
+     * @throws Exception
+     */
+    protected function getTaxClassId($value)
+    {
+        if (count($this->options) == 0) {
+            $this->loadTaxClasses();
+        }
+        if ($value === '' || is_null($value))  {
+            return 0;
+        }
+        if (array_key_exists($value, $this->options)) {
+            return $this->options[$value];
+        } else {
+            throw new Exception("tax_class_id \"$value\" not found");
+        }
+    }
+
+    /**
+     * Load tax classes from the database
+     */
+    protected function loadTaxClasses()
+    {
+        $this->options['None'] = 0;
+        
+        $table = $this->database->table('tax_class');
+        $query = "SELECT class_id, class_name from $table where class_type = 'PRODUCT'";
+        $results = $this->database->fetchAll($query);
+        foreach ($results as $result) {
+            $this->options[$result['class_name']] = $result['class_id'];
+            $this->options[$result['class_id']]   = $result['class_id'];
         }
     }
 
