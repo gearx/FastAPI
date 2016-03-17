@@ -157,6 +157,8 @@ class Gearx_FastApi_Model_Attribute
     {
         if (is_numeric($value)) {
             return ($value > 0) ? $value : 0;
+        } elseif ($value === '' || is_null($value)) {
+            return null;
         } else {
             throw new Exception("Numeric attribute cannot be be set to non-numeric value \"$value\"");
         }
@@ -209,6 +211,9 @@ class Gearx_FastApi_Model_Attribute
     {
         if ($this->getType() != 'select') {
             throw new Exception("Can't get option_id for non-select attribute " . $this->code);
+        }
+        if ($value === '' || is_null($value)) {
+            return null;
         }
         if (!array_key_exists($value, $this->options)) {
             $this->loadOptionId($value);
