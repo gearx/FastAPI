@@ -111,7 +111,7 @@ class Gearx_FastApi_Model_Request
         
         $status = 'Request complete';
         if ($errors) $status .= ' with errors';
-        if ($fieldmap) $status .= ".  Fieldmap $this->fieldmap_code used";
+        if ($fieldmap) $status .= ".  Fieldmap \"$this->fieldmap_code\" used";
 
         return array(
             'status' => $status,

@@ -14,10 +14,12 @@
     <example>
         <suggested_retail>msrp</suggested_retail>
         <our_retail>price</our_retail>
-        <sale_price>current_price</sale_price>
+        <sale_price>special_price</sale_price>
         <quantity>qty</quantity>
-        <upc>upc</upc>
-        <brand>manufacturer</brand>
+        <tax_id>tax_class_id</tax_id>
+        <weight>weight</weight>
+        <summary>short_description</summary>
+        <description>description</description>
     </example>
 
 </fieldmap>
