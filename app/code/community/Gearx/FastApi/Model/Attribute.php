@@ -125,6 +125,9 @@ class Gearx_FastApi_Model_Attribute
             case 'weight':
                 $backend_value = $this->validateNumber($value);
                 break;
+            case 'date':
+                $backend_value = $this->validateDate($value);
+                break;
             case 'select':
                 if ($this->code == 'tax_class_id') {
                     $backend_value = $this->getTaxClassId($value);
@@ -161,6 +164,21 @@ class Gearx_FastApi_Model_Attribute
             return null;
         } else {
             throw new Exception("Numeric attribute cannot be be set to non-numeric value \"$value\"");
+        }
+    }
+
+    /**
+     * No validation currently other than setting blank to NULL
+     * @TODO add actual date string validation
+     * @param $value
+     * @return null
+     */
+    protected function validateDate($value)
+    {
+        if ($value === '' || is_null($value)) {
+            return null;
+        } else {
+            return $value;
         }
     }
 
