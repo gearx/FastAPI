@@ -7,7 +7,7 @@ endpoints as the default Magento API are used, but the methods themselves handle
 numbers of records much more efficiently. If you are unfamiliar with the Magento API, have
 a look at the documentation first:
 
-* ##### [Magento API Documentation](http://devdocs.magento.com/guides/m1x/api/soap/introduction.html)
+* **[Magento API Documentation](http://devdocs.magento.com/guides/m1x/api/soap/introduction.html)**
 
 ### *Warning & Disclaimer*
 **_While these methods do some basic validation, not all bases are covered.  I'm aiming to
