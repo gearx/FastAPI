@@ -50,7 +50,9 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
                 $request->addError($e->getMessage());
             }
         }
-        //Mage::getSingleton('gxapi/request')->reindexUpdatedProducts();
+        if (Mage::getStoreConfig('api/gearx/reindex')) {
+            $request->reindexUpdatedProducts();
+        }
         return $request->getResponse();
     }
     

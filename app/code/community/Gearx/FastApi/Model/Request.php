@@ -110,7 +110,11 @@ class Gearx_FastApi_Model_Request
         $errors = (count($this->errors) > 0) ? $this->errors : false;
         
         $status = 'Request complete';
-        if ($errors) $status .= ' with errors';
+        if ($errors) {
+            $status .= ' with errors';
+        } else {
+            $status .= ' with no errors';
+        }
         if ($fieldmap) $status .= ".  Fieldmap \"$this->fieldmap_code\" used";
 
         return array(
@@ -125,12 +129,11 @@ class Gearx_FastApi_Model_Request
         if (Mage::helper('core')->isModuleEnabled('Enterprise_Index')) {
             // Enterprise will automatically reindex updated products on cron 
             // so no action is necessary unless immediate reindexing is required
-            // Mage::getSingleton('enterprise_index/observer')->refreshIndex(Mage::getModel('cron/schedule'));
+             Mage::getSingleton('enterprise_index/observer')->refreshIndex(Mage::getModel('cron/schedule'));
         } else {
             $entity_ids = $this->getProducts();
-            /*
-             * Generate a fake mass update event that we pass to our indexers.
-             */
+ 
+            // Create a mass update event to pass to the indexers
             $event = Mage::getModel('index/event');
             $event->setNewData(array(
                 'reindex_price_product_ids' => &$entity_ids, // for product_indexer_price
@@ -138,7 +141,7 @@ class Gearx_FastApi_Model_Request
                 'product_ids'               => &$entity_ids, // for category_indexer_product
                 'reindex_eav_product_ids'   => &$entity_ids  // for product_indexer_eav
             ));
-            // Index our product entities.
+            // Perform mass action for each index type
             Mage::getResourceSingleton('cataloginventory/indexer_stock')->catalogProductMassAction($event);
             Mage::getResourceSingleton('catalog/product_indexer_price')->catalogProductMassAction($event);
             Mage::getResourceSingleton('catalog/category_indexer_product')->catalogProductMassAction($event);

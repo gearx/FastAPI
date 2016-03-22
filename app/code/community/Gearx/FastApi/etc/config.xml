@@ -17,4 +17,11 @@
             </gxapi>
         </helpers>
     </global>
+    <default>
+        <api>
+            <gearx>
+                <reindex>1</reindex>
+            </gearx>
+        </api>
+    </default>
 </config>
