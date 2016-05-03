@@ -30,10 +30,10 @@ class Gearx_FastApi_Model_Attribute
     {
         $this->code = $code;
         $this->database = Mage::getSingleton('gxapi/database');
-        
+        $entTypeTable = $this->database->table('eav_entity_type');
         $table = $this->database->table('eav_attribute');
-        $binds = array('attribute_code' => $code);
-        $query = "SELECT attribute_id, frontend_input, backend_type FROM $table WHERE attribute_code = :attribute_code";
+        $binds = array('attribute_code' => $code, 'entity_type_code' => 'catalog_product');
+        $query = "SELECT $table.attribute_id, $table.frontend_input, $table.backend_type FROM $table LEFT JOIN $entTypeTable ON $entTypeTable.entity_type_id = $table.entity_type_id WHERE $table.attribute_code = :attribute_code AND $entTypeTable.entity_type_code = :entity_type_code";
         $result = $this->database->fetchRecord($query, $binds);
 
         if (is_null($result['attribute_id'])) {
@@ -129,7 +129,7 @@ class Gearx_FastApi_Model_Attribute
                 $backend_value = $this->validateDate($value);
                 break;
             case 'select':
-                if ($this->code == 'tax_class_id') {
+                if ($this->code === 'tax_class_id') {
                     $backend_value = $this->getTaxClassId($value);
                 } else {
                     $backend_value = $this->getOptionId($value);
@@ -209,7 +209,7 @@ class Gearx_FastApi_Model_Attribute
     protected function loadTaxClasses()
     {
         $this->options['None'] = 0;
-        
+        $this->options[0] = 'None';
         $table = $this->database->table('tax_class');
         $query = "SELECT class_id, class_name from $table where class_type = 'PRODUCT'";
         $results = $this->database->fetchAll($query);
