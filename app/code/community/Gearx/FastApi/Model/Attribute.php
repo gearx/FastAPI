@@ -30,6 +30,7 @@ class Gearx_FastApi_Model_Attribute
     {
         $this->code = $code;
         $this->database = Mage::getSingleton('gxapi/database');
+
         $entTypeTable = $this->database->table('eav_entity_type');
         $table = $this->database->table('eav_attribute');
         $binds = array('attribute_code' => $code, 'entity_type_code' => 'catalog_product');
@@ -210,6 +211,7 @@ class Gearx_FastApi_Model_Attribute
     {
         $this->options['None'] = 0;
         $this->options[0] = 'None';
+
         $table = $this->database->table('tax_class');
         $query = "SELECT class_id, class_name from $table where class_type = 'PRODUCT'";
         $results = $this->database->fetchAll($query);
