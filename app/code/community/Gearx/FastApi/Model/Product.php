@@ -50,9 +50,13 @@ class Gearx_FastApi_Model_Product
     public function updateField($code, $value)
     {
         try {
-            if ($code == 'qty') {
+            if ($code === 'qty') {
                 $this->updateStock($value);
-            } else {
+            }
+            elseif($code === 'website_id') {
+                $this->updateWebsiteId($value);
+            }
+            else {
                 $attribute = $this->request->getAttribute($code);
                 $attribute->updateValue($this->entity_id, $value);
             }
@@ -88,9 +92,32 @@ class Gearx_FastApi_Model_Product
             $this->updateParentStockStatus();
         }
     }
+    
+    /**
+     * Update website_id of an item
+     * @param $value
+     */
+    public function updateWebsiteId($value)
+    {
+        if(!is_array($value)){
+            throw new Exception("website_id value must be an array");
+        }
+        else {
+            foreach($value as $site_id) {
+                if(!is_int($site_id)){
+                    throw new Exception("website_id values must be integers.");
+                }
+                else {
+                    $cpw = $this->database->table('catalog_product_website');
+                    $query = 'INSERT IGNORE INTO '.$cpw.' VALUES ('.$this->entity_id.','.$site_id.')';
+                    $this->database->write($query);
+                }
+            }
+        }
+    }
 
     /**
-     * Update stock status of a parent item based on total qty of it's children
+     * Update stock status of a parent item based on total qty of its children
      */
     protected function updateParentStockStatus()
     {
