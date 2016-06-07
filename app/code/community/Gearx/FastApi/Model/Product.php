@@ -68,14 +68,14 @@ class Gearx_FastApi_Model_Product
 
     /**
      * Update qty and stock status
+     * Negative qty must be allowed,
+     * else a cancelled order could incorrectly put a product back in stock
      * @param $qty  number
      * @throws Exception
      */
     public function updateStock($qty) 
     {
-        if (is_numeric($qty)) {
-            $qty = ($qty > 0) ? $qty : 0;
-        } else {
+        if (!is_numeric($qty)) {
             throw new Exception("Stock quantity cannot be be set to non-numeric value \"$qty\"");
         }
         
