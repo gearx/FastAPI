@@ -35,8 +35,8 @@ class Gearx_FastApi_Model_Attribute
         $entTypeId = $this->database->fetchValue($query);
 
         $table = $this->database->table('eav_attribute');
-        $binds = array('attribute_code' => $code);
-        $query = "SELECT attribute_id, frontend_input, backend_type FROM $table WHERE attribute_code = :attribute_code AND entity_type_id = $entTypeId";
+        $binds = array('attribute_code' => $code, 'ent_type_id' => $entTypeId);
+        $query = "SELECT attribute_id, frontend_input, backend_type FROM $table WHERE attribute_code = :attribute_code AND entity_type_id = :ent_type_id";
         $result = $this->database->fetchRecord($query, $binds);
 
         if (is_null($result['attribute_id'])) {
@@ -132,7 +132,6 @@ class Gearx_FastApi_Model_Attribute
                 $backend_value = $this->validateDate($value);
                 break;
             case 'select':
-                //#mendy made the below triple equals
                 if ($this->code === 'tax_class_id') {
                     $backend_value = $this->getTaxClassId($value);
                 } else {

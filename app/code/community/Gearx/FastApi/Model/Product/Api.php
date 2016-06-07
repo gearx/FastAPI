@@ -9,23 +9,34 @@
 class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
 {
 
-//    $products = array( 
-//        '5674-MD-BLUE' => array(
-//            'special_price' => 39.95,
-//            'price' => 49.95,
-//            'qty' => 13,
-//            'upc' => '543749281654',
-//            'location' => 'XW4E2',
-//        ),
-//        '5674-SM-BLUE' => array(
-//            'special_price' => 39.95,
-//            'price' => 49.95,
-//            'qty' => 8,
-//            'upc' => '543749281653',
-//            'location' => 'XW4E2',
-//        ),
-//        //etc
-//    );
+    /**
+     * Update products with values provided in an associative array, using skus as keys.
+     * Optionally provide a field map code to use a field mapping defined in etc/fieldmap.xml
+     * Returns array of success/error messages
+     * Example product data array:
+     *
+     *     $products = array(
+     *          '5674-MD-BLUE' => array(
+     *              'special_price' => 39.95,
+     *              'price' => 49.95,
+     *              'qty' => 13,
+     *              'upc' => '543749281654',
+     *              'location' => 'XW4E2',
+     *          ),
+     *          '5674-SM-BLUE' => array(
+     *              'special_price' => 39.95,
+     *              'price' => 49.95,
+     *              'qty' => 8,
+     *              'upc' => '543749281653',
+     *              'location' => 'XW4E2',
+     *          )
+     *      );
+     *
+     * @param $products
+     * @param $field_map_code
+     * @return mixed
+     * @throws Mage_Api_Exception
+     */
     public function update($products, $field_map_code = false)
     {
         if (!is_array($products) || count($products) == 0 ) {
@@ -55,7 +66,15 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
         }
         return $request->getResponse();
     }
-    
+
+    /**
+     * Check which skus exist and which do not, from the passed array.
+     * Returns an associative array with the skus as keys.  Nonexistent skus are given
+     * a false value, found skus are given their product type (simple, configurable, etc)
+     * @param  array $skus
+     * @return array
+     * @throws Mage_Api_Exception
+     */
     public function checkSkus($skus)
     {
         if (is_array($skus) && count($skus) > 0 ) {
