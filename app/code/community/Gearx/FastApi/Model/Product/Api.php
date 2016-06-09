@@ -37,7 +37,7 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
      * @return mixed
      * @throws Mage_Api_Exception
      */
-    public function update($products, $field_map_code = false)
+    public function update($products, $field_map_code = null)
     {
         if (!is_array($products) || count($products) == 0 ) {
             $this->_fault('bad_param');
@@ -57,6 +57,7 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
                         $product->updateField($mapped_code, $value);
                     }
                 }
+                Mage::dispatchEvent('gxapi_product_update_after', ['product' => $product ]);
             } catch (Exception $e) {
                 $request->addError($e->getMessage());
             }

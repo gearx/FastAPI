@@ -16,13 +16,24 @@ class Gearx_FastApi_Model_Request
 
 
     /**
-     * If passed a param other than false, attempt to load the specified
-     * field mapping from etc/fieldmap.xml
+     * Load the specified field mapping from etc/fieldmap.xml, unless fieldmap_code is false.
+     * If fieldmap_code is null (unspecified), then an event is dispatched to allow the 
+     * possibility of a default fieldmap to be specified by an observer
      * @param $fieldmap_code
      * @throws Exception
      */
     public function setFieldMap($fieldmap_code)
     {
+        if ($fieldmap_code === null) {
+            $transport = new stdClass();
+            Mage::dispatchEvent('gxapi_request_setfieldmap_null', ['transport' => $transport]);
+            if (isset($transport->fieldmap)) {
+                $fieldmap_code = $transport->fieldmap;
+            } else {
+                $fieldmap_code = false;
+            }
+        }
+        
         if ($fieldmap_code === false) {
             $this->fieldmap = false;
         } else {

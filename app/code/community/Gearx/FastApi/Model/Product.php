@@ -15,6 +15,7 @@ class Gearx_FastApi_Model_Product
     protected $entity_id;
     protected $has_parents;
     protected $parent_ids;
+    protected $updated_fields = [];
 
     /**
      * Gearx_FastApi_Model_Product constructor.
@@ -60,6 +61,7 @@ class Gearx_FastApi_Model_Product
                 $attribute = $this->request->getAttribute($code);
                 $attribute->updateValue($this->entity_id, $value);
             }
+            $this->updated_fields[] = $code;
         } catch (Exception $e) {
             $this->request->addError("SKU $this->sku:  field \"$code\" skipped:  " . $e->getMessage());
         }
@@ -116,6 +118,11 @@ class Gearx_FastApi_Model_Product
         }
     }
 
+    public function getUpdatedFields()
+    {
+        return $this->updated_fields;
+    }
+    
     /**
      * Update stock status of a parent item based on total qty of its children
      */
