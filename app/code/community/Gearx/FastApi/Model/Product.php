@@ -14,7 +14,7 @@ class Gearx_FastApi_Model_Product
     protected $sku;
     protected $entity_id;
     protected $has_parents;
-    protected $parent_ids;
+    protected $parent_ids = [];
     protected $updated_fields = [];
 
     /**
@@ -61,7 +61,7 @@ class Gearx_FastApi_Model_Product
                 $attribute = $this->request->getAttribute($code);
                 $attribute->updateValue($this->entity_id, $value);
             }
-            $this->updated_fields[] = $code;
+            $this->updated_fields[$code] = $value;
         } catch (Exception $e) {
             $this->request->addError("SKU $this->sku:  field \"$code\" skipped:  " . $e->getMessage());
         }
@@ -94,7 +94,7 @@ class Gearx_FastApi_Model_Product
             $this->updateParentStockStatus();
         }
     }
-    
+
     /**
      * Update website_id of an item
      * @param $value
@@ -180,7 +180,7 @@ class Gearx_FastApi_Model_Product
         } else {
             $this->has_parents = true;
             foreach ($results as $result) {
-                $this->parent_ids[] = $result[0];
+                $this->parent_ids[] = $result['parent_id'];
             }
         }
     }
@@ -192,12 +192,12 @@ class Gearx_FastApi_Model_Product
      */
     protected function getParentQty($parent_id)
     {
-        $ciss = $this->database->table('cataloginventory_stock_status');
+        $cisi = $this->database->table('cataloginventory_stock_item');
         $cpsl = $this->database->table('catalog_product_super_link');
         $binds = array('parent_id' => $parent_id);
         
-        $query = "SELECT sum($ciss.qty) as total
-                  FROM $ciss LEFT JOIN $cpsl ON ($cpsl.product_id = $ciss.product_id)
+        $query = "SELECT sum($cisi.qty) as total
+                  FROM $cisi LEFT JOIN $cpsl ON ($cpsl.product_id = $cisi.product_id)
                   WHERE $cpsl.parent_id = :parent_id";
         
         return $this->database->fetchValue($query, $binds);
