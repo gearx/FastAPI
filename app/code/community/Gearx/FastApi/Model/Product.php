@@ -187,6 +187,8 @@ class Gearx_FastApi_Model_Product
 
     /**
      * Get the total stock quantity of a given parent's child products
+     * Negative quanities are excluded so they don't cancel out the values
+     * of other in stock children
      * @param $parent_id
      * @return number
      */
@@ -198,9 +200,10 @@ class Gearx_FastApi_Model_Product
         
         $query = "SELECT sum($cisi.qty) as total
                   FROM $cisi LEFT JOIN $cpsl ON ($cpsl.product_id = $cisi.product_id)
-                  WHERE $cpsl.parent_id = :parent_id";
-        
-        return $this->database->fetchValue($query, $binds);
+                  WHERE $cpsl.parent_id = :parent_id AND $cisi.qty > 0";
+
+        $result = $this->database->fetchValue($query, $binds);
+        return ($result == null) ? 0 : $result;
     }
 
 }
