@@ -58,6 +58,10 @@ class Gearx_FastApi_Model_Product_Api extends Mage_Catalog_Model_Api_Resource
                     }
                 }
                 Mage::dispatchEvent('gxapi_product_update_after', ['product' => $product ]);
+                $updated_fields = $product->getUpdatedFields();
+                if (!empty($updated_fields)) {
+                    $product->updateUpdatedAt();
+                }
             } catch (Exception $e) {
                 $request->addError($e->getMessage());
             }

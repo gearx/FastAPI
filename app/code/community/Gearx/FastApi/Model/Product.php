@@ -206,4 +206,15 @@ class Gearx_FastApi_Model_Product
         return ($result == null) ? 0 : $result;
     }
 
+    /**
+     * Update the updated_at value in the DB to current timestamp
+     */
+    public function updateUpdatedAt()
+    {
+        $cpe = $this->database->table('catalog_product_entity');
+        $binds = [ 'id' => $this->entity_id ];
+        $query = "UPDATE $cpe  SET updated_at  = now() WHERE entity_id = :id; ";
+        $this->database->write($query, $binds);
+    }
+
 }
