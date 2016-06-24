@@ -213,7 +213,7 @@ class Gearx_FastApi_Model_Product
     {
         $cpe = $this->database->table('catalog_product_entity');
         $binds = [ 'id' => $this->entity_id ];
-        $query = "UPDATE $cpe  SET updated_at  = now() WHERE entity_id = :id; ";
+        $query = "UPDATE $cpe  SET updated_at  = utc_timestamp() WHERE entity_id = :id; ";
         $this->database->write($query, $binds);
     }
 
